@@ -8,14 +8,32 @@
       // Use DOMParser to parse the HTML response
       const doc = new DOMParser().parseFromString(html, 'text/html');
       
-      // Get the search container from the parsed HTML
+      // Extract the search bar container
       const searchBar = doc.querySelector('.search-container');
       
-      // If the search bar exists, inject it into your page
+      // Extract necessary scripts and styles for the search bar to work
+      const scripts = doc.querySelectorAll('script[src]');
+      const styles = doc.querySelectorAll('link[rel="stylesheet"]');
+      
+      // Inject the search bar into the page
       if (searchBar) {
-        // Clear any other elements from the container, just insert the search bar
         document.getElementById('custom-search-container').innerHTML = '';
         document.getElementById('custom-search-container').appendChild(searchBar);
+        
+        // Inject the relevant CSS styles
+        styles.forEach(style => {
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = style.href;  // Assuming the stylesheets are valid URLs
+          document.head.appendChild(link);
+        });
+
+        // Inject necessary scripts for functionality
+        scripts.forEach(script => {
+          const scriptTag = document.createElement('script');
+          scriptTag.src = script.src;
+          document.body.appendChild(scriptTag);
+        });
       } else {
         console.log('Search container not found!');
       }
